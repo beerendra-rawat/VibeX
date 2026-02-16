@@ -5,13 +5,78 @@ import {
     TouchableOpacity,
     Image,
     ImageBackground,
+    ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
+import { GoogleSignin, isErrorWithCode, isSuccessResponse, statusCodes, } from '@react-native-google-signin/google-signin';
+import { useState, useEffect } from "react";
 
 export default function GoogleAuthScreen({ navigation }) {
 
+    const [userInfo, setUserInfo] = useState(null);
+    const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        GoogleSignin.configure({
+            "webClientId": "349500459690-id6rht9d5a1hodim2pvrpch4ipqng644.apps.googleusercontent.com",
+            scopes: ["profile", "email"],
+            offlineAccess: true,
+        });
+    }, [])
+
+    const handleGoogleSignIn = async () => {
+        console.log("Google sign-in process started ")
+        try {
+            console.log("Checking for google play services available? ")
+            setLoading(true);
+            await GoogleSignin.hasPlayServices();
+            console.log("yes, google play services available! ")
+
+            console.log("Initiating google sing-in")
+            const response = await GoogleSignin.signIn();
+            console.log("Received response from google sign-in:", response);
+
+            if (isSuccessResponse(response)) {
+                console.log("user successfully signed in.")
+                console.log("User Info: ", response.data)
+
+                setUserInfo(response.data);
+                console.log("user state update successfully")
+                
+                navigation.navigate("Main");
+            }
+            else {
+                console.log("sing-in was cancelled by the user")
+            }
+
+        } catch (error) {
+            console.log("an error occurred during google sign-in: ", error)
+
+            if (isErrorWithCode(error)) {
+                console.log("handling know google sign-in error code...")
+
+                switch (error.code) {
+                    case statusCodes.IN_PROGRESS:
+                        console.log("sign-in operation already in progress.")
+                        break;
+
+                    case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+                        console.error("google play services not available or outdated.")
+                        break;
+
+                    default:
+                        console.error("some other google sign-in error occurred")
+                }
+            }
+            else {
+                console.error("error not related to google sign-in: ", error)
+            }
+        }
+        console.log("google sign-in process completed")
+        setLoading(false);
+    };
     return (
         <ImageBackground
             source={require("../assets/img/onboard.png")}
@@ -28,15 +93,23 @@ export default function GoogleAuthScreen({ navigation }) {
                 <TouchableOpacity
                     style={styles.googleBtn}
                     activeOpacity={0.8}
-                    onPress={() => navigation.navigate("Main")}
+                    onPress={handleGoogleSignIn}
+                    disabled={loading}
                 >
-                    <Image
-                        source={require("../assets/img/google.png")}
-                        style={styles.googleIcon}
-                    />
-                    <Text style={styles.googleText}>
-                        Continue with Google
-                    </Text>
+                    {loading ? (
+                        <ActivityIndicator size="large" color="#fff" />
+                    ) : (
+                        <>
+                            <Image
+                                source={require("../assets/img/google.png")}
+                                style={styles.googleIcon}
+                            />
+                            <Text style={styles.googleText}>
+                                Continue with Google
+                            </Text>
+                        </>
+                    )}
+
                 </TouchableOpacity>
 
             </SafeAreaView>

@@ -9,8 +9,11 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { useState } from "react";
 
 export default function SettingScreen({ navigation }) {
+    const [userInfo, setUserInfo] = useState("")
     const user = {
         name: "Samantha William",
         email: "samantha@gmail.com",
@@ -45,6 +48,20 @@ export default function SettingScreen({ navigation }) {
         },
     ];
 
+    const signOut = async () => {
+        try {
+            await GoogleSignin.signOut()
+            console.log("Successfully signed out from Google.")
+            setUserInfo(null)
+            navigation.navigate("GoogleAuthScreen")
+        }
+        catch (error) {
+            console.error("error occurred during sign-out: ", error)
+        }
+        finally {
+            console.log("sign-out process completed.")
+        }
+    }
     return (
         <SafeAreaView style={styles.safeArea} edges={["top"]}>
             <StatusBar style="light" />
@@ -76,7 +93,9 @@ export default function SettingScreen({ navigation }) {
                     ))}
                 </View>
 
-                <TouchableOpacity style={styles.logoutBtn} onPress={() => navigation.navigate("GoogleAuthScreen")}>
+                <TouchableOpacity
+                    style={styles.logoutBtn}
+                    onPress={signOut}>
                     <Ionicons name="log-out-outline" size={24} color="#fff" />
                     <Text style={styles.logoutText}>Logout</Text>
                 </TouchableOpacity>
