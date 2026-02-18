@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
-import { GoogleSignin, isErrorWithCode, isSuccessResponse, statusCodes, } from '@react-native-google-signin/google-signin';
+import { GoogleSignin, isErrorWithCode, statusCodes, } from '@react-native-google-signin/google-signin';
 import { useState, useEffect } from "react";
 
 export default function GoogleAuthScreen({ navigation }) {
@@ -38,14 +38,19 @@ export default function GoogleAuthScreen({ navigation }) {
             const response = await GoogleSignin.signIn();
             console.log("Received response from google sign-in:", response);
 
-            if (isSuccessResponse(response)) {
+            if (response.type === "success") {
                 console.log("user successfully signed in.")
-                console.log("User Info: ", response.data)
 
-                setUserInfo(response.data);
+                const user = response.data.user
+                console.log("User Info:-  ", user)
+
+                setUserInfo(user);
                 console.log("user state update successfully")
-                
-                navigation.navigate("Main");
+
+                navigation.navigate("Main", {
+                    screen: "Home",
+                    params: { user }
+                }); //pass data next screen
             }
             else {
                 console.log("sing-in was cancelled by the user")

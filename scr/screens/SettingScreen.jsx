@@ -25,26 +25,25 @@ export default function SettingScreen({ navigation }) {
             id: 1,
             title: "Account",
             icon: "person-outline",
+            screen: "Account",
         },
         {
             id: 2,
-            title: "Notifications",
-            icon: "notifications-outline",
+            title: "Privacy",
+            icon: "lock-closed-outline",
+            screen: "Privacy",
         },
         {
             id: 3,
-            title: "Privacy",
-            icon: "lock-closed-outline",
+            title: "Help & Support",
+            icon: "help-circle-outline",
+            screen: "HelpAndSupport",
         },
         {
             id: 4,
-            title: "Help & Support",
-            icon: "help-circle-outline",
-        },
-        {
-            id: 5,
-            title: "About App",
+            title: "About",
             icon: "information-circle-outline",
+            screen: "AboutApp",
         },
     ];
 
@@ -83,7 +82,8 @@ export default function SettingScreen({ navigation }) {
 
                 <View style={styles.listContainer}>
                     {settingsData.map((item) => (
-                        <TouchableOpacity key={item.id} style={styles.listItem}>
+                        <TouchableOpacity key={item.id} style={styles.listItem}
+                            onPress={() => navigation.navigate(item.screen)}>
                             <View style={styles.leftRow}>
                                 <Ionicons name={item.icon} size={20} color="#A5B4FC" />
                                 <Text style={styles.listText}>{item.title}</Text>

@@ -9,62 +9,61 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
+import { useFavorite } from "../context/FavoriteContext";
+import { formatTime } from "../utils/Helper";
 
-export default function FavoriteSong() {
-    const favoriteSongs = [
-        {
-            id: "1",
-            title: "Starlit Reverie",
-            artist: "Budiarti",
-            image: require("../assets/img/avtar.jpeg"),
-        },
-        {
-            id: "2",
-            title: "Midnight Confessions",
-            artist: "Arlo James",
-            image: require("../assets/img/avtar.jpeg"),
-        },
-        {
-            id: "3",
-            title: "Lost in the Echo",
-            artist: "Nova Sky",
-            image: require("../assets/img/avtar.jpeg"),
-        },
-        {
-            id: "4",
-            title: "Dreamscape",
-            artist: "Luna Ray",
-            image: require("../assets/img/avtar.jpeg"),
-        },
-    ];
+export default function FavoriteSong({ navigation }) {
+
+    const { favorites, removeFromFavorite } = useFavorite();
 
     const renderItem = ({ item }) => (
-        <TouchableOpacity style={styles.songItem}>
-            <Image source={item.image} style={styles.songImage} />
+        <TouchableOpacity
+            style={styles.songItem}
+            onPress={() =>
+                navigation.navigate("MusicScreen", {
+                    song: item,
+                    songs: favorites,
+                })
+            }
+        >
+            <Image
+                source={require("../assets/img/avtar.jpeg")}
+                style={styles.songImage}
+            />
 
             <View style={styles.songInfo}>
-                <Text style={styles.songTitle}>{item.title}</Text>
-                <Text style={styles.songArtist}>{item.artist}</Text>
+                <Text style={styles.songTitle}>{item.filename}</Text>
+                <Text style={styles.songArtist}>
+                    {formatTime(item.duration)}
+                </Text>
             </View>
 
-            <View style={styles.rightSection}>
-                <Ionicons name="play-circle" size={50} color="#A5B4FC" />
-            </View>
+            <TouchableOpacity
+                onPress={() => removeFromFavorite(item.id)}
+            >
+                <Ionicons name="heart" size={28} color="red" />
+            </TouchableOpacity>
         </TouchableOpacity>
     );
 
     return (
         <SafeAreaView style={styles.safeArea} edges={["top"]}>
             <StatusBar style="light" />
+
             <FlatList
-                data={favoriteSongs}
+                data={favorites}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 40 }}
+                ListEmptyComponent={
+                    <Text style={{ color: "#fff", textAlign: "center", marginTop: 50 }}>
+                        No Favorite Songs Yet ❤️
+                    </Text>
+                }
                 ListHeaderComponent={
                     <View style={styles.header}>
-                        <Text style={styles.headerTitle}>Favorite Songs</Text>
+                        <Text style={styles.headerTitle}>
+                            Favorite Songs
+                        </Text>
                     </View>
                 }
             />

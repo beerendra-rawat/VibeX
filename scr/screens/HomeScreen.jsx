@@ -5,7 +5,10 @@ import AutoSliderCard from "../components/AutoSliderCard";
 import PlaylistScreen from "./PlaylistScreen";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function HomeScreen() {
+export default function HomeScreen({ route }) {
+
+    const user = route.params.user;
+
 
     return (
         <View style={{ flex: 1, }}>
@@ -13,12 +16,12 @@ export default function HomeScreen() {
             <ImageBackground source={require("../assets/img/bgImgg.png")}
                 style={styles.bgImg} resizeMode="cover" >
 
-                <SafeAreaView style={styles.safeArea} edges={["top"]}>
+                <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
                     <View style={styles.container}>
 
                         <View style={styles.topRow}>
                             <View style={styles.avtarWrap}>
-                                <Image source={require("../assets/img/avtar.jpeg")}
+                                <Image source={{ uri: user.photo }} 
                                     style={styles.avtarIcon} />
                             </View>
                             <View style={styles.rightIcons}>
@@ -32,7 +35,7 @@ export default function HomeScreen() {
                                 </TouchableOpacity>
                             </View>
                         </View>
-                        <Text style={styles.title}>Hi, Samantha</Text>
+                        <Text style={styles.title}>Hi, {user.name}</Text>
                     </View>
 
                     <View style={styles.scrollContainer}>

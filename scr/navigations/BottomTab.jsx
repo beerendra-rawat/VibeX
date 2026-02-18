@@ -2,7 +2,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { View, Platform } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
 import HomeScreen from "../screens/HomeScreen";
 import SettingScreen from "../screens/SettingScreen";
 import FavoriteSong from "../screens/FavoriteSong";

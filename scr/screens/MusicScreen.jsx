@@ -11,21 +11,114 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import Slider from "@react-native-community/slider";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Audio } from "expo-av";
+import { formatTime } from "../utils/Helper";
+
+import { useFavorite } from "../context/FavoriteContext";
 
 const { width } = Dimensions.get("window");
 
-const mediaControl = [
-    { id: 1, img: require("../assets/img/shuffle.png") },
-    { id: 2, img: require("../assets/img/prev.png") },
-    { id: 3, img: require("../assets/img/pause.png") },
-    { id: 4, img: require("../assets/img/next.png") },
-    { id: 5, img: require("../assets/img/playlist.png") },
-];
+export default function MusicScreen({ navigation, route }) {
 
-export default function MusicScreen({ navigation }) {
-    const [value, setValue] = useState(28);
-    const duration = 135;
+    const { song, songs } = route.params;
+
+    const sound = useRef(null);
+
+    const [currentIndex, setCurrentIndex] = useState(
+        songs.findIndex((item) => item.id === song.id)
+    );
+
+    const [currentSong, setCurrentSong] = useState(song);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [position, setPosition] = useState(0);
+    const [duration, setDuration] = useState(1);
+
+    useEffect(() => {
+        loadSong(currentSong);
+
+        return () => {
+            if (sound.current) {
+                sound.current.unloadAsync();
+            }
+        };
+    }, [currentSong]);
+
+    const { addToFavorite, removeFromFavorite, isFavorite } = useFavorite();
+
+    const favorite = isFavorite(currentSong.id);
+
+    const handleFavorite = () => {
+        if (favorite) {
+            removeFromFavorite(currentSong.id);
+        } else {
+            addToFavorite(currentSong);
+        }
+    };
+
+    //Load Song
+    const loadSong = async (selectedSong) => {
+        try {
+            if (sound.current) {
+                await sound.current.unloadAsync();
+            }
+
+            const { sound: newSound } = await Audio.Sound.createAsync(
+                { uri: selectedSong.uri },
+                { shouldPlay: true },
+                onPlaybackStatusUpdate
+            );
+
+            sound.current = newSound;
+            setIsPlaying(true);
+        } catch (error) {
+            console.log("Error loading song:", error);
+        }
+    };
+
+    //Playback Status
+    const onPlaybackStatusUpdate = (status) => {
+        if (status.isLoaded) {
+            setPosition(status.positionMillis / 1000);
+            setDuration(status.durationMillis / 1000);
+            setIsPlaying(status.isPlaying);
+
+            //Auto play next when song ends
+            if (status.didJustFinish) {
+                handleNext();
+            }
+        }
+    };
+
+    const togglePlayPause = async () => {
+        if (!sound.current) return;
+
+        if (isPlaying) {
+            await sound.current.pauseAsync();
+            console.log("Song Stop....")
+        } else {
+            await sound.current.playAsync();
+            console.log("Song playing....")
+        }
+    };
+
+    const handleNext = () => {
+        const nextIndex =
+            currentIndex === songs.length - 1 ? 0 : currentIndex + 1;
+
+        setCurrentIndex(nextIndex);
+        setCurrentSong(songs[nextIndex]);
+        console.log("You tab next button....")
+    };
+
+    const handlePrevious = () => {
+        const prevIndex =
+            currentIndex === 0 ? songs.length - 1 : currentIndex - 1;
+
+        setCurrentIndex(prevIndex);
+        setCurrentSong(songs[prevIndex]);
+        console.log("You tab Prev button....")
+    };
 
     return (
         <View style={{ flex: 1 }}>
@@ -41,9 +134,13 @@ export default function MusicScreen({ navigation }) {
                     style={StyleSheet.absoluteFill}
                 />
 
-                <SafeAreaView style={styles.safeArea} edges={["top"]}>
+                <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
+
                     <View style={styles.topRow}>
-                        <TouchableOpacity style={styles.topIcon} onPress={() => navigation.goBack()}>
+                        <TouchableOpacity
+                            style={styles.topIcon}
+                            onPress={() => navigation.goBack()}
+                        >
                             <Image
                                 source={require("../assets/img/arrow.png")}
                                 style={styles.icons}
@@ -52,9 +149,16 @@ export default function MusicScreen({ navigation }) {
 
                         <Text style={styles.title}>Now Playing</Text>
 
-                        <TouchableOpacity style={styles.topIcon}>
+                        <TouchableOpacity
+                            style={styles.topIcon}
+                            onPress={handleFavorite}
+                        >
                             <Image
-                                source={require("../assets/img/heart.png")}
+                                source={
+                                    favorite
+                                        ? require("../assets/img/redHeart.png")
+                                        : require("../assets/img/heart.png")
+                                }
                                 style={styles.icons}
                             />
                         </TouchableOpacity>
@@ -69,8 +173,12 @@ export default function MusicScreen({ navigation }) {
                         </View>
 
                         <View style={styles.songInfo}>
-                            <Text style={styles.songTitle}>Starlit Reverie</Text>
-                            <Text style={styles.artist}>Budiarti x Lil magrib</Text>
+                            <Text style={styles.songTitle}>
+                                {currentSong.filename}
+                            </Text>
+                            <Text style={styles.artist}>
+                                {currentSong.mediaType}
+                            </Text>
                         </View>
                     </View>
 
@@ -78,48 +186,89 @@ export default function MusicScreen({ navigation }) {
                         <Slider
                             minimumValue={0}
                             maximumValue={duration}
-                            value={value}
-                            onValueChange={setValue}
+                            value={position}
+                            onSlidingComplete={async (val) => {
+                                await sound.current.setPositionAsync(val * 1000);
+                            }}
                             minimumTrackTintColor="#C6F36A"
                             maximumTrackTintColor="rgba(255,255,255,0.2)"
                             thumbTintColor="#C6F36A"
                         />
 
                         <View style={styles.timeRow}>
-                            <Text style={styles.timeText}>0:28</Text>
-                            <Text style={styles.timeText}>-2:15</Text>
+                            <Text style={styles.timeText}>
+                                {formatTime(position)}
+                            </Text>
+                            <Text style={styles.timeText}>
+                                {formatTime(duration)}
+                            </Text>
                         </View>
+
                         <View style={styles.mediaControlRow}>
-                            {mediaControl.map((item) => (
-                                <TouchableOpacity
-                                    key={item.id}
-                                    style={[
-                                        styles.controlIcon,
-                                        item.id === 3 && styles.playButton,
-                                    ]}
-                                >
-                                    <Image source={item.img} style={styles.controlImage} />
-                                </TouchableOpacity>
-                            ))}
+                            <TouchableOpacity style={styles.controlIcon}>
+                                <Image
+                                    source={require("../assets/img/shuffle.png")}
+                                    style={styles.controlImage}
+                                />
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={styles.controlIcon}
+                                onPress={handlePrevious}
+                            >
+                                <Image
+                                    source={require("../assets/img/prev.png")}
+                                    style={styles.controlImage}
+                                />
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={[styles.controlIcon, styles.playButton]}
+                                onPress={togglePlayPause}
+                            >
+                                <Image
+                                    source={
+                                        isPlaying
+                                            ? require("../assets/img/pause.png")
+                                            : require("../assets/img/play-3.png")
+                                    }
+                                    style={styles.controlImage}
+                                />
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={styles.controlIcon}
+                                onPress={handleNext}
+                            >
+                                <Image
+                                    source={require("../assets/img/next.png")}
+                                    style={styles.controlImage}
+                                />
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={styles.controlIcon}>
+                                <Image
+                                    source={require("../assets/img/playlist.png")}
+                                    style={styles.controlImage}
+                                />
+                            </TouchableOpacity>
                         </View>
                     </View>
-
-
                 </SafeAreaView>
             </ImageBackground>
         </View>
     );
 }
+
 const styles = StyleSheet.create({
-    background: {
-        flex: 1,
-    },
+    background: { flex: 1 },
     safeArea: {
         flex: 1,
         paddingHorizontal: 24,
         justifyContent: "space-between",
     },
     topRow: {
+        paddingTop: 18,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
@@ -139,11 +288,11 @@ const styles = StyleSheet.create({
     },
     title: {
         color: "#fff",
-        fontSize: 26,
+        fontSize: 18,
         fontWeight: "600",
     },
     centerContainer: {
-        alignItems: "center",
+        alignItems: "center"
     },
     avatarWrap: {
         width: width * 0.7,
@@ -162,7 +311,7 @@ const styles = StyleSheet.create({
     songTitle: {
         color: "#fff",
         fontSize: 24,
-        fontWeight: 600,
+        fontWeight: "600",
     },
     artist: {
         color: "rgba(255,255,255,0.6)",
@@ -170,20 +319,20 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     bottomContainer: {
-        marginBottom: 30,
+        marginBottom: 30
     },
     timeRow: {
         flexDirection: "row",
         justifyContent: "space-between",
         marginTop: 5,
-        paddingHorizontal: 12
+        paddingHorizontal: 12,
     },
     timeText: {
         color: "#fff",
-        fontSize: 14,
+        fontSize: 14
     },
     mediaControlRow: {
-        marginBottom: 30,
+        marginTop: 20,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
@@ -205,6 +354,12 @@ const styles = StyleSheet.create({
         width: 70,
         height: 70,
         borderRadius: 35,
-        backgroundColor: "#C6F36A",
+        backgroundColor: "#34D399",
+
+        shadowColor: "#34D399",
+        shadowOpacity: 0.6,
+        shadowRadius: 10,
+        elevation: 8,
+
     },
 });

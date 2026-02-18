@@ -9,43 +9,49 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
+import * as MediaLibrary from 'expo-media-library';
+import { useEffect, useState } from "react";
+import { formatTime } from "../utils/Helper";
 
 export default function MusicListScreen({ navigation }) {
-    const favoriteSongs = [
-        {
-            id: "1",
-            title: "Starlit Reverie",
-            artist: "Budiarti",
-            image: require("../assets/img/avtar.jpeg"),
-        },
-        {
-            id: "2",
-            title: "Midnight Confessions",
-            artist: "Arlo James",
-            image: require("../assets/img/avtar.jpeg"),
-        },
-        {
-            id: "3",
-            title: "Lost in the Echo",
-            artist: "Nova Sky",
-            image: require("../assets/img/avtar.jpeg"),
-        },
-        {
-            id: "4",
-            title: "Dreamscape",
-            artist: "Luna Ray",
-            image: require("../assets/img/avtar.jpeg"),
-        },
-    ];
+
+    const [songs, setSongs] = useState([])
+
+    useEffect(() => {
+        requestPermisssion()
+    }, [])
+
+    const requestPermisssion = async () => {
+        const { status } = await MediaLibrary.requestPermissionsAsync()
+        console.log("permissions response data: ", status)
+
+        if (status === 'granted') {
+            loadSongs()
+            console.log("Songs load successfully")
+        }
+        else {
+            alert("Permission required to load songs")
+        }
+    }
+
+    const loadSongs = async () => {
+        const media = await MediaLibrary.getAssetsAsync({
+            mediaType: 'audio',
+            first: 100,
+        })
+        setSongs(media.assets)
+        console.log("Media Assest: ", media.assets)
+    }
+
 
     const renderItem = ({ item }) => (
         <TouchableOpacity style={styles.songItem}
-            onPress={() => navigation.navigate("MusicScreen") } >
-            <Image source={item.image} style={styles.songImage} />
+            onPress={() => navigation.navigate("MusicScreen", { song: item, songs: songs, })} >
+            <Image source={require("../assets/img/avtar.jpeg")} style={styles.songImage} />
 
             <View style={styles.songInfo}>
-                <Text style={styles.songTitle}>{item.title}</Text>
-                <Text style={styles.songArtist}>{item.artist}</Text>
+                <Text style={styles.songTitle}>{item.filename}</Text>
+                <Text style={styles.songduration}>{formatTime(item.duration)}</Text>
             </View>
 
             <View style={styles.rightSection}>
@@ -58,7 +64,7 @@ export default function MusicListScreen({ navigation }) {
         <SafeAreaView style={styles.safeArea} edges={["top"]}>
             <StatusBar style="light" />
             <FlatList
-                data={favoriteSongs}
+                data={songs}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id}
                 showsVerticalScrollIndicator={false}
@@ -106,7 +112,7 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         color: "#fff",
     },
-    songArtist: {
+    songduration: {
         fontSize: 13,
         color: "#aaa",
         marginTop: 4,
