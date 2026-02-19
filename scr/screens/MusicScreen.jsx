@@ -47,6 +47,21 @@ export default function MusicScreen({ navigation, route }) {
         };
     }, [currentSong]);
 
+    useEffect(() => {
+        const setupAudio = async () => {
+            await Audio.setAudioModeAsync({
+                staysActiveInBackground: true,   // ✅ IMPORTANT
+                playsInSilentModeIOS: true,
+                shouldDuckAndroid: true,
+                interruptionModeAndroid: 1,
+                interruptionModeIOS: 1,
+                playThroughEarpieceAndroid: false,
+            });
+        };
+
+        setupAudio();
+    }, []);
+
     const { addToFavorite, removeFromFavorite, isFavorite } = useFavorite();
 
     const favorite = isFavorite(currentSong.id);

@@ -14,7 +14,12 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.beerendra.VibeX"
+      "bundleIdentifier": "com.beerendra.VibeX",
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "audio"
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -25,7 +30,8 @@
       "permissions": [
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
-        "READ_MEDIA_AUDIO"
+        "READ_MEDIA_AUDIO",
+        "WAKE_LOCK"
       ],
       "package": "com.beerendra.VibeX"
     },
