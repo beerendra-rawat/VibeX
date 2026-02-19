@@ -11,41 +11,41 @@ import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { useState } from "react";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+
+const settingsData = [
+    {
+        id: 1,
+        title: "Account",
+        icon: "person-outline",
+        screen: "Account",
+    },
+    {
+        id: 2,
+        title: "Privacy",
+        icon: "lock-closed-outline",
+        screen: "Privacy",
+    },
+    {
+        id: 3,
+        title: "Help & Support",
+        icon: "help-circle-outline",
+        screen: "HelpAndSupport",
+    },
+    {
+        id: 4,
+        title: "About",
+        icon: "information-circle-outline",
+        screen: "AboutApp",
+    },
+];
 
 export default function SettingScreen({ navigation }) {
     const [userInfo, setUserInfo] = useState("")
-    const user = {
-        name: "Samantha William",
-        email: "samantha@gmail.com",
-        avatar: require("../assets/img/avtar.jpeg"),
-    };
 
-    const settingsData = [
-        {
-            id: 1,
-            title: "Account",
-            icon: "person-outline",
-            screen: "Account",
-        },
-        {
-            id: 2,
-            title: "Privacy",
-            icon: "lock-closed-outline",
-            screen: "Privacy",
-        },
-        {
-            id: 3,
-            title: "Help & Support",
-            icon: "help-circle-outline",
-            screen: "HelpAndSupport",
-        },
-        {
-            id: 4,
-            title: "About",
-            icon: "information-circle-outline",
-            screen: "AboutApp",
-        },
-    ];
+
+    const { user } = useContext(AuthContext)
 
     const signOut = async () => {
         try {
@@ -73,7 +73,7 @@ export default function SettingScreen({ navigation }) {
                 </View>
 
                 <View style={styles.userCard}>
-                    <Image source={user.avatar} style={styles.avatar} />
+                    <Image source={{ uri: user?.photo }} style={styles.avatar} />
                     <View>
                         <Text style={styles.userName}>{user.name}</Text>
                         <Text style={styles.userEmail}>{user.email}</Text>

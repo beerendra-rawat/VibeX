@@ -12,10 +12,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import { GoogleSignin, isErrorWithCode, statusCodes, } from '@react-native-google-signin/google-signin';
 import { useState, useEffect } from "react";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 export default function GoogleAuthScreen({ navigation }) {
 
-    const [userInfo, setUserInfo] = useState(null);
+    const { setUser } = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
@@ -44,13 +46,10 @@ export default function GoogleAuthScreen({ navigation }) {
                 const user = response.data.user
                 console.log("User Info:-  ", user)
 
-                setUserInfo(user);
+                setUser(user);
                 console.log("user state update successfully")
 
-                navigation.navigate("Main", {
-                    screen: "Home",
-                    params: { user }
-                }); //pass data next screen
+                navigation.navigate("Main")
             }
             else {
                 console.log("sing-in was cancelled by the user")
@@ -88,35 +87,42 @@ export default function GoogleAuthScreen({ navigation }) {
             style={styles.background}
             resizeMode='contain'
         >
-            <SafeAreaView style={styles.container} edges={['top']}>
+            <SafeAreaView style={styles.safeArea} edges={['top']}>
                 <StatusBar style="light" />
-                <View style={styles.logoContainer}>
-                    <Ionicons name="musical-notes" size={70} color="#5b1f81" />
-                    <Text style={styles.appName}>VibeX Music</Text>
-                </View>
 
-                <TouchableOpacity
-                    style={styles.googleBtn}
-                    activeOpacity={0.8}
-                    onPress={handleGoogleSignIn}
-                    disabled={loading}
-                >
-                    {loading ? (
-                        <ActivityIndicator size="large" color="#fff" />
-                    ) : (
-                        <>
-                            <Image
-                                source={require("../assets/img/google.png")}
-                                style={styles.googleIcon}
-                            />
-                            <Text style={styles.googleText}>
-                                Continue with Google
-                            </Text>
-                        </>
-                    )}
-
+                <TouchableOpacity style={styles.skipWrap}
+                onPress={() => navigation.navigate("Main")}>
+                    <Text style={styles.skipText}>Skip</Text>
                 </TouchableOpacity>
 
+                    <View style={styles.logoContainer}>
+                        <Ionicons name="musical-notes" size={70} color="#5b1f81" />
+                        <Text style={styles.appName}>VibeX Music</Text>
+                    </View>
+
+                    <TouchableOpacity
+                        style={styles.googleBtn}
+                        activeOpacity={0.8}
+                        // onPress={()=> navigation.navigate("Main")}
+                        onPress={handleGoogleSignIn}
+                        disabled={loading}
+                    >
+                        {loading ? (
+                            <ActivityIndicator size="large" color="#fff" />
+                        ) : (
+                            <>
+                                <Image
+                                    source={require("../assets/img/google.png")}
+                                    style={styles.googleIcon}
+                                />
+                                <Text style={styles.googleText}>
+                                    Continue with Google
+                                </Text>
+                            </>
+                        )}
+
+                    </TouchableOpacity>
+               
             </SafeAreaView>
 
         </ImageBackground>
@@ -127,14 +133,25 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#5e95a9',
     },
+    safeArea: {
+        flex: 1,
+    },
     overlay: {
         flex: 1,
     },
-    container: {
-        flex: 1,
-        justifyContent: "space-between",
-        alignItems: "center",
-        paddingVertical: 100,
+    skipWrap: {
+        margin: 24,
+        alignSelf: "flex-end",
+        borderWidth: 1,
+        borderRadius: 12,
+        borderColor: "#fff",
+        width: "contain",
+        padding: 12,
+    },
+    skipText: {
+        color: "#fff",
+        fontSize: 18,
+        fontWeight: 600,
     },
     logoContainer: {
         alignItems: "center",
@@ -147,10 +164,12 @@ const styles = StyleSheet.create({
         letterSpacing: 2,
     },
     googleBtn: {
+        marginTop: 350,
         width: "85%",
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
+        alignSelf: 'center',
         paddingVertical: 18,
         paddingHorizontal: 25,
         borderRadius: 50,

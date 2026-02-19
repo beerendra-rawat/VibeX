@@ -14,7 +14,7 @@ import Slider from "@react-native-community/slider";
 import { useEffect, useRef, useState } from "react";
 import { Audio } from "expo-av";
 import { formatTime } from "../utils/Helper";
-
+import { Ionicons } from '@expo/vector-icons';
 import { useFavorite } from "../context/FavoriteContext";
 
 const { width } = Dimensions.get("window");
@@ -25,6 +25,7 @@ export default function MusicScreen({ navigation, route }) {
 
     const sound = useRef(null);
 
+
     const [currentIndex, setCurrentIndex] = useState(
         songs.findIndex((item) => item.id === song.id)
     );
@@ -33,6 +34,8 @@ export default function MusicScreen({ navigation, route }) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [position, setPosition] = useState(0);
     const [duration, setDuration] = useState(1);
+    const [isShuffle, setIsShuffle] = useState(false);
+    const [isLoop, setIsLoop] = useState(false);
 
     useEffect(() => {
         loadSong(currentSong);
@@ -83,9 +86,12 @@ export default function MusicScreen({ navigation, route }) {
             setDuration(status.durationMillis / 1000);
             setIsPlaying(status.isPlaying);
 
-            //Auto play next when song ends
             if (status.didJustFinish) {
-                handleNext();
+                if (isLoop) {
+                    sound.current.replayAsync();
+                } else {
+                    handleNext();
+                }
             }
         }
     };
@@ -103,12 +109,17 @@ export default function MusicScreen({ navigation, route }) {
     };
 
     const handleNext = () => {
-        const nextIndex =
-            currentIndex === songs.length - 1 ? 0 : currentIndex + 1;
+        let nextIndex;
+
+        if (isShuffle) {
+            nextIndex = Math.floor(Math.random() * songs.length);
+        } else {
+            nextIndex =
+                currentIndex === songs.length - 1 ? 0 : currentIndex + 1;
+        }
 
         setCurrentIndex(nextIndex);
         setCurrentSong(songs[nextIndex]);
-        console.log("You tab next button....")
     };
 
     const handlePrevious = () => {
@@ -205,10 +216,16 @@ export default function MusicScreen({ navigation, route }) {
                         </View>
 
                         <View style={styles.mediaControlRow}>
-                            <TouchableOpacity style={styles.controlIcon}>
+                            <TouchableOpacity
+                                style={styles.controlIcon}
+                                onPress={() => setIsShuffle(!isShuffle)}
+                            >
                                 <Image
                                     source={require("../assets/img/shuffle.png")}
-                                    style={styles.controlImage}
+                                    style={[
+                                        styles.controlImage,
+                                        { tintColor: isShuffle ? "#34D399" : "#fff" }
+                                    ]}
                                 />
                             </TouchableOpacity>
 
@@ -246,10 +263,14 @@ export default function MusicScreen({ navigation, route }) {
                                 />
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={styles.controlIcon}>
-                                <Image
-                                    source={require("../assets/img/playlist.png")}
-                                    style={styles.controlImage}
+                            <TouchableOpacity
+                                style={styles.controlIcon}
+                                onPress={() => setIsLoop(!isLoop)}
+                            >
+                                <Ionicons
+                                    name="repeat-outline"
+                                    size={24}
+                                    color={isLoop ? "#34D399" : "#fff"}
                                 />
                             </TouchableOpacity>
                         </View>
@@ -284,7 +305,6 @@ const styles = StyleSheet.create({
     icons: {
         width: 22,
         height: 22,
-        tintColor: "#fff",
     },
     title: {
         color: "#fff",

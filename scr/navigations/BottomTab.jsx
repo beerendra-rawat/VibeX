@@ -19,15 +19,17 @@ export default function BottomTab() {
                 tabBarShowLabel: false,
 
                 tabBarStyle: {
+                    marginHorizontal: 24,
                     position: "absolute",
                     justifyContent: 'center',
                     left: 20,
                     right: 20,
-                    bottom: insets.bottom + 10,
+                    bottom: insets.bottom + 5,
                     height: 65,
                     borderRadius: 35,
-                    backgroundColor: "rgba(255,255,255,0.08)",
-                    borderWidth: 1,
+                    backgroundColor: "rgba(18, 25, 45, 1)",
+                    borderTopWidth: 1.5,
+                    borderWidth: 1.5,
                     borderColor: "#C6F36A",
                     paddingBottom: Platform.OS === "ios" ? insets.bottom : 8,
                 },
@@ -35,7 +37,7 @@ export default function BottomTab() {
                 tabBarItemStyle: {
                     justifyContent: "center",
                     alignItems: "center",
-                    paddingTop: 10,
+                    paddingVertical: 12,
                 },
 
                 tabBarIcon: ({ focused }) => {

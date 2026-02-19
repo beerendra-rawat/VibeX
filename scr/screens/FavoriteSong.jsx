@@ -56,7 +56,7 @@ export default function FavoriteSong({ navigation }) {
                 keyExtractor={(item) => item.id}
                 ListEmptyComponent={
                     <Text style={{ color: "#fff", textAlign: "center", marginTop: 50 }}>
-                        No Favorite Songs Yet ❤️
+                        No Favorite Songs Yet.
                     </Text>
                 }
                 ListHeaderComponent={

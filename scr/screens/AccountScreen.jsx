@@ -1,4 +1,3 @@
-import React from "react";
 import {
     View,
     Text,
@@ -10,21 +9,12 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
+import { AuthContext } from "../context/AuthContext";
+import { useContext } from "react";
 
-const AccountScreen = ({ navigation, route }) => {
-    const { user } = route.params || {};
+const AccountScreen = ({ navigation }) => {
 
-    // Dummy fallback data
-    const profile = {
-        name: user?.name || "Beerendra Rawat",
-        email: user?.email || "beerendra@example.com",
-        photo:
-            user?.photo ||
-            "https://i.pravatar.cc/300",
-        totalSongs: 128,
-        totalPlaylists: 12,
-    };
-
+    const { user } = useContext(AuthContext)
     return (
         <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
             <StatusBar style="light" />
@@ -44,23 +34,23 @@ const AccountScreen = ({ navigation, route }) => {
 
                 {/* Profile Section */}
                 <View style={styles.profileSection}>
-                    <Image source={{ uri: profile.photo }} style={styles.avatar} />
+                    <Image source={{ uri: user?.photo }} style={styles.avatar} />
 
-                    <Text style={styles.name}>{profile.name}</Text>
-                    <Text style={styles.email}>{profile.email}</Text>
+                    <Text style={styles.name}>{user.name}</Text>
+                    <Text style={styles.email}>{user.email}</Text>
                 </View>
 
                 {/* Stats Section */}
                 <View style={styles.statsContainer}>
                     <View style={styles.statBox}>
                         <Ionicons name="musical-notes-outline" size={22} color="#6366F1" />
-                        <Text style={styles.statNumber}>{profile.totalSongs}</Text>
+                        <Text style={styles.statNumber}>380</Text>
                         <Text style={styles.statLabel}>Total Songs</Text>
                     </View>
 
                     <View style={styles.statBox}>
                         <Ionicons name="list-outline" size={22} color="#22D3EE" />
-                        <Text style={styles.statNumber}>{profile.totalPlaylists}</Text>
+                        <Text style={styles.statNumber}>10</Text>
                         <Text style={styles.statLabel}>Playlists</Text>
                     </View>
                 </View>
