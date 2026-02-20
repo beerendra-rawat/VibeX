@@ -69,4 +69,3 @@ export const FavoriteProvider = ({ children }) => {
 };
 
 export const useFavorite = () => useContext(FavoriteContext);
-

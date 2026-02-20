@@ -13,15 +13,23 @@ import AutoSliderCard from "../components/AutoSliderCard";
 import LoadSongs from "../components/LoadSongs";
 import { requestPermission } from "../utils/Helper";
 import { AuthContext } from "../context/AuthContext";
+import { MusicContext } from "../context/MusicContext";
+import MiniPlayer from "../components/MiniPlayer";
 
 export default function HomeScreen({ navigation }) {
     const { user } = useContext(AuthContext);
+    const { playSong } = useContext(MusicContext);
     const [songs, setSongs] = useState([]);
     const [activeTab, setActiveTab] = useState("all");
 
     useEffect(() => {
         requestPermission(setSongs);
     }, []);
+
+    const handleSongPress = (song, songList) => {
+        playSong(song, songList);
+        navigation.navigate("MusicScreen");
+    };
 
     return (
         <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
@@ -48,20 +56,21 @@ export default function HomeScreen({ navigation }) {
                     Hi, {user?.name}
                 </Text>
             </View>
-            <View style={styles.sliderSection}>  
+            <View style={styles.sliderSection}>
                 <AutoSliderCard />
             </View>
-            <View style={styles.tabSection}>           
+            <View style={styles.tabSection}>
                 <ScrollTab
                     activeTab={activeTab}
                     onTabPress={setActiveTab}
                 />
             </View>
-            <View style={styles.songList}>        
+            <View style={styles.songList}>
                 {activeTab === "all" && (
                     <LoadSongs
                         songs={songs}
                         navigation={navigation}
+                        onSongPress={(song) => handleSongPress(song, songs)}
                     />
                 )}
                 {activeTab === "newrelease" && (
@@ -70,9 +79,11 @@ export default function HomeScreen({ navigation }) {
                             (a, b) => b.modificationTime - a.modificationTime
                         )}
                         navigation={navigation}
+                        onSongPress={(song) => handleSongPress(song, songs)}
                     />
                 )}
             </View>
+            <MiniPlayer />
         </SafeAreaView>
     );
 }
@@ -96,7 +107,7 @@ const styles = StyleSheet.create({
         borderRadius: 35,
         overflow: "hidden",
         borderWidth: 2,
-        borderColor: "#000",
+        borderColor: "#333",
     },
     avtarIcon: {
         width: "100%",
@@ -130,6 +141,7 @@ const styles = StyleSheet.create({
     },
     songList: {
         marginTop: 16,
-        marginBottom: 200,
+        flex: 1,
+        paddingBottom: 80,
     },
 });

@@ -10,30 +10,34 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import { useFavorite } from "../context/FavoriteContext";
+import { useContext } from "react";
+import { MusicContext } from "../context/MusicContext";
 import { formatTime } from "../utils/Helper";
 
 export default function FavoriteSong({ navigation }) {
     const { favorites, removeFromFavorite } = useFavorite();
+    const { playSong } = useContext(MusicContext);
+
     const renderItem = ({ item }) => (
         <TouchableOpacity
             style={styles.songItem}
-            onPress={() =>
-                navigation.navigate("MusicScreen", {
-                    song: item,
-                    songs: favorites,
-                })
-            }
+            onPress={async () => {
+                await playSong(item, favorites);
+                navigation.navigate("MusicScreen");
+            }}
         >
             <Image
                 source={require("../assets/img/icon.png")}
                 style={styles.songImage}
             />
+
             <View style={styles.songInfo}>
                 <Text style={styles.songTitle}>{item.filename}</Text>
                 <Text style={styles.songArtist}>
                     {formatTime(item.duration)}
                 </Text>
             </View>
+
             <TouchableOpacity
                 onPress={() => removeFromFavorite(item.id)}
             >
@@ -45,6 +49,7 @@ export default function FavoriteSong({ navigation }) {
     return (
         <SafeAreaView style={styles.safeArea} edges={["top"]}>
             <StatusBar style="light" />
+
             <FlatList
                 data={favorites}
                 renderItem={renderItem}
@@ -65,6 +70,7 @@ export default function FavoriteSong({ navigation }) {
         </SafeAreaView>
     );
 }
+
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
@@ -104,14 +110,11 @@ const styles = StyleSheet.create({
         color: "#aaa",
         marginTop: 4,
     },
-    rightSection: {
-        alignItems: "center",
-    },
     subTitle: {
         fontSize: 16,
-        fontWeight: 600,
+        fontWeight: "600",
         color: "#fff",
         textAlign: "center",
-        marginTop: 50
-    }
+        marginTop: 50,
+    },
 });

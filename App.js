@@ -11,26 +11,29 @@ import HelpAndSupportScreen from './scr/screens/HelpAndSupportScreen';
 import AboutAppScreen from './scr/screens/AboutAppScreen';
 import AccountScreen from './scr/screens/AccountScreen';
 import SearchScreen from './scr/screens/SearchScreen';
+import { MusicProvider } from './scr/context/MusicContext';
 
 const Stack = createNativeStackNavigator()
 export default function App() {
   return (
     <AuthProvider>
-      <FavoriteProvider>
-        <NavigationContainer>
-          <StatusBar style='light' />
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name='GoogleAuthScreen' component={GoogleAuthScreen} />
-            <Stack.Screen name="Main" component={BottomTab} />
-            <Stack.Screen name='MusicScreen' component={MusicScreen} />
-            <Stack.Screen name="Account" component={AccountScreen} />
-            <Stack.Screen name="Privacy" component={PrivacyScreen} />
-            <Stack.Screen name="HelpAndSupport" component={HelpAndSupportScreen} />
-            <Stack.Screen name="AboutApp" component={AboutAppScreen} />
-            <Stack.Screen name="SearchScreen" component={SearchScreen} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </FavoriteProvider>
+      <MusicProvider>
+        <FavoriteProvider>
+          <NavigationContainer>
+            <StatusBar style='light' />
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen name='GoogleAuthScreen' component={GoogleAuthScreen} />
+              <Stack.Screen name="Main" component={BottomTab} />
+              <Stack.Screen name='MusicScreen' component={MusicScreen} />
+              <Stack.Screen name="Account" component={AccountScreen} />
+              <Stack.Screen name="Privacy" component={PrivacyScreen} />
+              <Stack.Screen name="HelpAndSupport" component={HelpAndSupportScreen} />
+              <Stack.Screen name="AboutApp" component={AboutAppScreen} />
+              <Stack.Screen name="SearchScreen" component={SearchScreen} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </FavoriteProvider>
+      </MusicProvider>
     </AuthProvider>
   );
 }
