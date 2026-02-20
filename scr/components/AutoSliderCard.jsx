@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     image: {
         position: 'relative',
         width: "50%",
-        height:  "100%",
+        height: "100%",
         borderRadius: 22,
         resizeMode: 'contain'
     },

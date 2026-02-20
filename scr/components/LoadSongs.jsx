@@ -25,15 +25,13 @@ export default function LoadSong({ songs, navigation }) {
                 source={require("../assets/img/icon.png")}
                 style={styles.songImage}
             />
-
             <View style={styles.songInfo}>
                 <Text style={styles.songTitle}>{item.filename}</Text>
                 <Text style={styles.songDuration}>
                     {formatTime(item.duration)}
                 </Text>
             </View>
-
-            <Ionicons name="play-circle" size={45} color="#A5B4FC" />
+            <Ionicons name="play-circle" size={45} color="#9fa1af" />
         </TouchableOpacity>
     );
 
@@ -47,7 +45,6 @@ export default function LoadSong({ songs, navigation }) {
         />
     );
 }
-
 const styles = StyleSheet.create({
     songItem: {
         flexDirection: "row",

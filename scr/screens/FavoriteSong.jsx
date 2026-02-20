@@ -13,9 +13,7 @@ import { useFavorite } from "../context/FavoriteContext";
 import { formatTime } from "../utils/Helper";
 
 export default function FavoriteSong({ navigation }) {
-
     const { favorites, removeFromFavorite } = useFavorite();
-
     const renderItem = ({ item }) => (
         <TouchableOpacity
             style={styles.songItem}
@@ -27,17 +25,15 @@ export default function FavoriteSong({ navigation }) {
             }
         >
             <Image
-                source={require("../assets/img/avtar.jpeg")}
+                source={require("../assets/img/icon.png")}
                 style={styles.songImage}
             />
-
             <View style={styles.songInfo}>
                 <Text style={styles.songTitle}>{item.filename}</Text>
                 <Text style={styles.songArtist}>
                     {formatTime(item.duration)}
                 </Text>
             </View>
-
             <TouchableOpacity
                 onPress={() => removeFromFavorite(item.id)}
             >
@@ -49,13 +45,12 @@ export default function FavoriteSong({ navigation }) {
     return (
         <SafeAreaView style={styles.safeArea} edges={["top"]}>
             <StatusBar style="light" />
-
             <FlatList
                 data={favorites}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id}
                 ListEmptyComponent={
-                    <Text style={{ color: "#fff", textAlign: "center", marginTop: 50 }}>
+                    <Text style={styles.subTitle}>
                         No Favorite Songs Yet.
                     </Text>
                 }
@@ -73,14 +68,14 @@ export default function FavoriteSong({ navigation }) {
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: "#0B0F1A",
+        backgroundColor: "#000",
     },
     header: {
         paddingHorizontal: 24,
         paddingVertical: 18,
     },
     headerTitle: {
-        fontSize: 26,
+        fontSize: 22,
         fontWeight: "600",
         color: "#fff",
     },
@@ -91,8 +86,8 @@ const styles = StyleSheet.create({
         paddingVertical: 14,
     },
     songImage: {
-        width: 60,
-        height: 60,
+        width: 35,
+        height: 35,
         borderRadius: 14,
     },
     songInfo: {
@@ -112,4 +107,11 @@ const styles = StyleSheet.create({
     rightSection: {
         alignItems: "center",
     },
+    subTitle: {
+        fontSize: 16,
+        fontWeight: 600,
+        color: "#fff",
+        textAlign: "center",
+        marginTop: 50
+    }
 });

@@ -1,4 +1,3 @@
-import React from "react";
 import {
   View,
   Text,
@@ -10,25 +9,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 
-const PrivacyScreen = ({ navigation }) => {
+export default function PrivacyScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <StatusBar style="light" />
-
-      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.btnWrap}>
           <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
         </TouchableOpacity>
-
         <Text style={styles.title}>Privacy Policy</Text>
-
-        <View style={{ width: 24 }} />
       </View>
-
       <ScrollView contentContainerStyle={styles.content}>
-        
-        {/* Intro Card */}
         <View style={styles.card}>
           <Text style={styles.heading}>Your Privacy Matters</Text>
           <Text style={styles.text}>
@@ -36,8 +27,6 @@ const PrivacyScreen = ({ navigation }) => {
             data on external servers.
           </Text>
         </View>
-
-        {/* Permission Section */}
         <View style={styles.policyCard}>
           <View style={styles.row}>
             <Ionicons name="folder-open-outline" size={20} color="#6366F1" />
@@ -48,8 +37,6 @@ const PrivacyScreen = ({ navigation }) => {
             stored on your device. Files are never uploaded.
           </Text>
         </View>
-
-        {/* Data Collection Section */}
         <View style={styles.policyCard}>
           <View style={styles.row}>
             <Ionicons name="shield-checkmark-outline" size={20} color="#22D3EE" />
@@ -60,8 +47,6 @@ const PrivacyScreen = ({ navigation }) => {
             location without your consent.
           </Text>
         </View>
-
-        {/* Offline Section */}
         <View style={styles.policyCard}>
           <View style={styles.row}>
             <Ionicons name="cloud-offline-outline" size={20} color="#F472B6" />
@@ -72,8 +57,6 @@ const PrivacyScreen = ({ navigation }) => {
             completely on your device.
           </Text>
         </View>
-
-        {/* Updates Section */}
         <View style={styles.policyCard}>
           <View style={styles.row}>
             <Ionicons name="refresh-outline" size={20} color="#FACC15" />
@@ -84,7 +67,6 @@ const PrivacyScreen = ({ navigation }) => {
             review this page periodically.
           </Text>
         </View>
-
         <Text style={styles.footer}>
           For privacy concerns, contact VibeX Support.
         </Text>
@@ -92,74 +74,69 @@ const PrivacyScreen = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
-export default PrivacyScreen;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0F172A",
+    backgroundColor: "#000",
   },
-
   header: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    gap: 15,
     alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingHorizontal: 24,
+    paddingVertical: 18,
   },
-
+  btnWrap: {
+    width: 45,
+    height: 45,
+    borderRadius: 25,
+    backgroundColor: "rgba(255,255,255,0.15)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   title: {
     color: "#FFFFFF",
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: "600",
   },
-
   content: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
     paddingBottom: 30,
   },
-
   card: {
-    backgroundColor: "#1E293B",
+    backgroundColor: "#1E1E1E",
     padding: 18,
     borderRadius: 16,
     marginBottom: 20,
   },
-
   policyCard: {
-    backgroundColor: "#1E293B",
+    backgroundColor: "#1E1E1E",
     padding: 16,
     borderRadius: 14,
     marginBottom: 15,
   },
-
   heading: {
     color: "#FFFFFF",
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 8,
   },
-
   subHeading: {
     color: "#FFFFFF",
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "600",
     marginLeft: 8,
   },
-
   row: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 6,
   },
-
   text: {
     color: "#CBD5E1",
     fontSize: 14,
     lineHeight: 20,
   },
-
   footer: {
     color: "#94A3B8",
     fontSize: 12,

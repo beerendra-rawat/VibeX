@@ -107,7 +107,7 @@ export default function SettingScreen({ navigation }) {
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: "#0B0F1A",
+        backgroundColor: "#000",
     },
     header: {
         paddingHorizontal: 24,
@@ -124,8 +124,9 @@ const styles = StyleSheet.create({
         marginHorizontal: 24,
         marginTop: 30,
         padding: 20,
-        backgroundColor: "rgba(255,255,255,0.06)",
-        borderRadius: 22,
+        backgroundColor: "#1E1E1E",
+        borderWidth: 1,
+        borderRadius: 30,
     },
     avatar: {
         width: 75,
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
     listContainer: {
         marginTop: 35,
         marginHorizontal: 24,
-        backgroundColor: "rgba(255,255,255,0.04)",
+        backgroundColor: "#1E1E1E",
         borderRadius: 20,
         paddingVertical: 10,
     },

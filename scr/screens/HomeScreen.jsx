@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar";
 import {
     StyleSheet,
     View,
@@ -7,6 +6,7 @@ import {
     TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
 import { useContext, useEffect, useState } from "react";
 import ScrollTab from "../components/ScrollTab";
 import AutoSliderCard from "../components/AutoSliderCard";
@@ -24,10 +24,8 @@ export default function HomeScreen({ navigation }) {
     }, []);
 
     return (
-        <SafeAreaView style={styles.safeArea} edges={["top"]}>
+        <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
             <StatusBar style="light" />
-
-            {/* Header */}
             <View style={styles.headerContainer}>
                 <View style={styles.topRow}>
                     <View style={styles.avtarWrap}>
@@ -36,7 +34,6 @@ export default function HomeScreen({ navigation }) {
                             style={styles.avtarIcon}
                         />
                     </View>
-
                     <TouchableOpacity
                         style={styles.iconsWrap}
                         onPress={() => navigation.navigate("SearchScreen")}
@@ -47,66 +44,52 @@ export default function HomeScreen({ navigation }) {
                         />
                     </TouchableOpacity>
                 </View>
-
                 <Text style={styles.title}>
                     Hi, {user?.name}
                 </Text>
             </View>
-
-           
-                {/* Slider */}
-                <View style={styles.sliderSection}>
-                    <AutoSliderCard />
-                </View>
-
-                {/* ✅ Scroll Tabs (FIX ADDED HERE) */}
-                <View style={styles.tabSection}>
-                    <ScrollTab
-                        activeTab={activeTab}
-                        onTabPress={setActiveTab}
+            <View style={styles.sliderSection}>  
+                <AutoSliderCard />
+            </View>
+            <View style={styles.tabSection}>           
+                <ScrollTab
+                    activeTab={activeTab}
+                    onTabPress={setActiveTab}
+                />
+            </View>
+            <View style={styles.songList}>        
+                {activeTab === "all" && (
+                    <LoadSongs
+                        songs={songs}
+                        navigation={navigation}
                     />
-                </View>
-
-                {/* Songs */}
-                <View style={styles.songList}>
-                    {activeTab === "all" && (
-                        <LoadSongs
-                            songs={songs}
-                            navigation={navigation}
-                        />
-                    )}
-
-                    {activeTab === "newrelease" && (
-                        <LoadSongs
-                            songs={[...songs].sort(
-                                (a, b) => b.modificationTime - a.modificationTime
-                            )}
-                            navigation={navigation}
-                        />
-                    )}
-                </View>
-           
+                )}
+                {activeTab === "newrelease" && (
+                    <LoadSongs
+                        songs={[...songs].sort(
+                            (a, b) => b.modificationTime - a.modificationTime
+                        )}
+                        navigation={navigation}
+                    />
+                )}
+            </View>
         </SafeAreaView>
     );
 }
-
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: "#000", // pure black
+        backgroundColor: "#000",
     },
-
     headerContainer: {
         paddingHorizontal: 24,
         paddingTop: 10,
     },
-
     topRow: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
     },
-
     avtarWrap: {
         width: 70,
         height: 70,
@@ -115,12 +98,10 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#000",
     },
-
     avtarIcon: {
         width: "100%",
         height: "100%",
     },
-
     iconsWrap: {
         width: 44,
         height: 44,
@@ -129,30 +110,26 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#b0acac8a",
     },
-
     icons: {
         width: 22,
         height: 22,
         tintColor: "#fff",
     },
-
     title: {
         fontSize: 32,
         fontWeight: "600",
         color: "#fff",
         marginTop: 16,
     },
-
     sliderSection: {
         marginTop: 24,
     },
-
     tabSection: {
         marginTop: 28,
         paddingLeft: 24,
     },
-
     songList: {
         marginTop: 16,
+        marginBottom: 200,
     },
 });

@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar";
 import {
     Image,
     StyleSheet,
@@ -9,6 +8,7 @@ import {
     Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
 import Slider from "@react-native-community/slider";
 import { useEffect, useRef, useState } from "react";
@@ -22,20 +22,18 @@ const { width } = Dimensions.get("window");
 export default function MusicScreen({ navigation, route }) {
 
     const { song, songs } = route.params;
-
     const sound = useRef(null);
-
-
     const [currentIndex, setCurrentIndex] = useState(
         songs.findIndex((item) => item.id === song.id)
     );
-
     const [currentSong, setCurrentSong] = useState(song);
     const [isPlaying, setIsPlaying] = useState(false);
     const [position, setPosition] = useState(0);
     const [duration, setDuration] = useState(1);
     const [isShuffle, setIsShuffle] = useState(false);
     const [isLoop, setIsLoop] = useState(false);
+    const { addToFavorite, removeFromFavorite, isFavorite } = useFavorite();
+    const favorite = isFavorite(currentSong.id);
 
     useEffect(() => {
         loadSong(currentSong);
@@ -50,7 +48,7 @@ export default function MusicScreen({ navigation, route }) {
     useEffect(() => {
         const setupAudio = async () => {
             await Audio.setAudioModeAsync({
-                staysActiveInBackground: true,   // ✅ IMPORTANT
+                staysActiveInBackground: true,
                 playsInSilentModeIOS: true,
                 shouldDuckAndroid: true,
                 interruptionModeAndroid: 1,
@@ -58,13 +56,8 @@ export default function MusicScreen({ navigation, route }) {
                 playThroughEarpieceAndroid: false,
             });
         };
-
         setupAudio();
     }, []);
-
-    const { addToFavorite, removeFromFavorite, isFavorite } = useFavorite();
-
-    const favorite = isFavorite(currentSong.id);
 
     const handleFavorite = () => {
         if (favorite) {
@@ -74,19 +67,16 @@ export default function MusicScreen({ navigation, route }) {
         }
     };
 
-    //Load Song
     const loadSong = async (selectedSong) => {
         try {
             if (sound.current) {
                 await sound.current.unloadAsync();
             }
-
             const { sound: newSound } = await Audio.Sound.createAsync(
                 { uri: selectedSong.uri },
                 { shouldPlay: true },
                 onPlaybackStatusUpdate
             );
-
             sound.current = newSound;
             setIsPlaying(true);
         } catch (error) {
@@ -94,7 +84,6 @@ export default function MusicScreen({ navigation, route }) {
         }
     };
 
-    //Playback Status
     const onPlaybackStatusUpdate = (status) => {
         if (status.isLoaded) {
             setPosition(status.positionMillis / 1000);
@@ -113,7 +102,6 @@ export default function MusicScreen({ navigation, route }) {
 
     const togglePlayPause = async () => {
         if (!sound.current) return;
-
         if (isPlaying) {
             await sound.current.pauseAsync();
             console.log("Song Stop....")
@@ -125,14 +113,12 @@ export default function MusicScreen({ navigation, route }) {
 
     const handleNext = () => {
         let nextIndex;
-
         if (isShuffle) {
             nextIndex = Math.floor(Math.random() * songs.length);
         } else {
             nextIndex =
                 currentIndex === songs.length - 1 ? 0 : currentIndex + 1;
         }
-
         setCurrentIndex(nextIndex);
         setCurrentSong(songs[nextIndex]);
     };
@@ -140,7 +126,6 @@ export default function MusicScreen({ navigation, route }) {
     const handlePrevious = () => {
         const prevIndex =
             currentIndex === 0 ? songs.length - 1 : currentIndex - 1;
-
         setCurrentIndex(prevIndex);
         setCurrentSong(songs[prevIndex]);
         console.log("You tab Prev button....")
@@ -149,19 +134,16 @@ export default function MusicScreen({ navigation, route }) {
     return (
         <View style={{ flex: 1 }}>
             <StatusBar style="light" />
-
-            <ImageBackground
+            {/* <ImageBackground
                 source={require("../assets/img/avtar.jpeg")}
                 style={styles.background}
                 blurRadius={40}
-            >
+            > */}
                 <LinearGradient
                     colors={["rgba(0,0,0,0.3)", "#0E0F1A", "#000"]}
                     style={StyleSheet.absoluteFill}
                 />
-
                 <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
-
                     <View style={styles.topRow}>
                         <TouchableOpacity
                             style={styles.topIcon}
@@ -172,9 +154,7 @@ export default function MusicScreen({ navigation, route }) {
                                 style={styles.icons}
                             />
                         </TouchableOpacity>
-
                         <Text style={styles.title}>Now Playing</Text>
-
                         <TouchableOpacity
                             style={styles.topIcon}
                             onPress={handleFavorite}
@@ -185,15 +165,14 @@ export default function MusicScreen({ navigation, route }) {
                                         ? require("../assets/img/redHeart.png")
                                         : require("../assets/img/heart.png")
                                 }
-                                style={styles.icons}
+                                style={styles.faveIcon}
                             />
                         </TouchableOpacity>
                     </View>
-
                     <View style={styles.centerContainer}>
                         <View style={styles.avatarWrap}>
                             <Image
-                                source={require("../assets/img/avtar.jpeg")}
+                                source={require("../assets/img/cd.png")}
                                 style={styles.avatar}
                             />
                         </View>
@@ -216,9 +195,9 @@ export default function MusicScreen({ navigation, route }) {
                             onSlidingComplete={async (val) => {
                                 await sound.current.setPositionAsync(val * 1000);
                             }}
-                            minimumTrackTintColor="#C6F36A"
-                            maximumTrackTintColor="rgba(255,255,255,0.2)"
-                            thumbTintColor="#C6F36A"
+                            minimumTrackTintColor="#67E8F9"
+                            maximumTrackTintColor="#fff"
+                            thumbTintColor="#67E8F9"
                         />
 
                         <View style={styles.timeRow}>
@@ -291,7 +270,7 @@ export default function MusicScreen({ navigation, route }) {
                         </View>
                     </View>
                 </SafeAreaView>
-            </ImageBackground>
+            {/* </ImageBackground> */}
         </View>
     );
 }
@@ -318,6 +297,11 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     icons: {
+        tintColor: '#fff',
+        width: 22,
+        height: 22,
+    },
+    faveIcon: {
         width: 22,
         height: 22,
     },
@@ -330,8 +314,8 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     avatarWrap: {
-        width: width * 0.7,
-        height: width * 0.7,
+        width: width * 0.8,
+        height: width * 0.8,
         borderRadius: (width * 0.7) / 2,
         overflow: "hidden",
         marginBottom: 30,
@@ -344,8 +328,9 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     songTitle: {
+        textAlign: 'center',
         color: "#fff",
-        fontSize: 24,
+        fontSize: 22,
         fontWeight: "600",
     },
     artist: {
@@ -389,9 +374,9 @@ const styles = StyleSheet.create({
         width: 70,
         height: 70,
         borderRadius: 35,
-        backgroundColor: "#34D399",
+        backgroundColor: "#06B6D4",
 
-        shadowColor: "#34D399",
+        shadowColor: "#67E8F9",
         shadowOpacity: 0.6,
         shadowRadius: 10,
         elevation: 8,

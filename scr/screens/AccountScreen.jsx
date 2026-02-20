@@ -4,7 +4,6 @@ import {
     StyleSheet,
     TouchableOpacity,
     Image,
-    ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -12,131 +11,73 @@ import { StatusBar } from "expo-status-bar";
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
 
-const AccountScreen = ({ navigation }) => {
+export default function AccountScreen({ navigation }) {
 
-    const { user } = useContext(AuthContext)
+    const { user } = useContext(AuthContext);
+
     return (
         <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
             <StatusBar style="light" />
-
-            {/* Header */}
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.btnWrap}>
                     <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
                 </TouchableOpacity>
-
-                <Text style={styles.title}>My Profile</Text>
-
-                <View style={{ width: 24 }} />
+                <Text style={styles.title}>Account</Text>
             </View>
-
-            <ScrollView contentContainerStyle={styles.content}>
-
-                {/* Profile Section */}
-                <View style={styles.profileSection}>
-                    <Image source={{ uri: user?.photo }} style={styles.avatar} />
-
-                    <Text style={styles.name}>{user.name}</Text>
-                    <Text style={styles.email}>{user.email}</Text>
-                </View>
-
-                {/* Stats Section */}
-                <View style={styles.statsContainer}>
-                    <View style={styles.statBox}>
-                        <Ionicons name="musical-notes-outline" size={22} color="#6366F1" />
-                        <Text style={styles.statNumber}>380</Text>
-                        <Text style={styles.statLabel}>Total Songs</Text>
-                    </View>
-
-                    <View style={styles.statBox}>
-                        <Ionicons name="list-outline" size={22} color="#22D3EE" />
-                        <Text style={styles.statNumber}>10</Text>
-                        <Text style={styles.statLabel}>Playlists</Text>
-                    </View>
-                </View>
-            </ScrollView>
+            <View style={styles.profileSection}>
+                <Image source={{ uri: user?.photo }} style={styles.avatar} />
+                <Text style={styles.name}>{user?.name}</Text>
+                <Text style={styles.email}>{user?.email}</Text>
+            </View>
         </SafeAreaView>
     );
-};
-
-export default AccountScreen;
-
+}
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#0F172A",
+        backgroundColor: "#000",
     },
-
     header: {
         flexDirection: "row",
-        justifyContent: "space-between",
+        gap: 15,
         alignItems: "center",
-        paddingHorizontal: 20,
-        paddingVertical: 15,
+        paddingHorizontal: 24,
+        paddingVertical: 18,
     },
-
     title: {
         color: "#FFFFFF",
-        fontSize: 18,
+        fontSize: 22,
         fontWeight: "600",
     },
-
-    content: {
-        paddingHorizontal: 20,
-        paddingBottom: 30,
+    btnWrap: {
+        width: 45,
+        height: 45,
+        borderRadius: 25,
+        backgroundColor: "rgba(255,255,255,0.15)",
+        alignItems: "center",
+        justifyContent: "center",
     },
-
     profileSection: {
         alignItems: "center",
         marginTop: 40,
         marginBottom: 40,
     },
-
     avatar: {
         width: 120,
         height: 120,
         borderRadius: 60,
-        borderWidth: 3,
+        borderWidth: 1,
         borderColor: "#6366F1",
         marginBottom: 15,
     },
-
     name: {
         color: "#FFFFFF",
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: "600",
     },
-
     email: {
         color: "#94A3B8",
         fontSize: 14,
-        marginTop: 4,
-    },
-
-    statsContainer: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-    },
-
-    statBox: {
-        flex: 1,
-        backgroundColor: "#1E293B",
-        marginHorizontal: 5,
-        paddingVertical: 20,
-        borderRadius: 18,
-        alignItems: "center",
-    },
-
-    statNumber: {
-        color: "#FFFFFF",
-        fontSize: 20,
-        fontWeight: "bold",
-        marginTop: 8,
-    },
-
-    statLabel: {
-        color: "#94A3B8",
-        fontSize: 13,
         marginTop: 4,
     },
 });

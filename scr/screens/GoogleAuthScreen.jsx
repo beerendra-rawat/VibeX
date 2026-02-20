@@ -16,7 +16,6 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 export default function GoogleAuthScreen({ navigation }) {
-
     const { setUser } = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
 
@@ -81,6 +80,7 @@ export default function GoogleAuthScreen({ navigation }) {
         console.log("google sign-in process completed")
         setLoading(false);
     };
+
     return (
         <ImageBackground
             source={require("../assets/img/onboard.png")}
@@ -91,40 +91,38 @@ export default function GoogleAuthScreen({ navigation }) {
                 <StatusBar style="light" />
 
                 <TouchableOpacity style={styles.skipWrap}
-                onPress={() => navigation.navigate("Main")}>
+                // onPress={() => navigation.navigate("Main")}
+                >
                     <Text style={styles.skipText}>Skip</Text>
                 </TouchableOpacity>
 
-                    <View style={styles.logoContainer}>
-                        <Ionicons name="musical-notes" size={70} color="#5b1f81" />
-                        <Text style={styles.appName}>VibeX Music</Text>
-                    </View>
+                <View style={styles.logoContainer}>
+                    <Ionicons name="musical-notes" size={70} color="#5b1f81" />
+                    <Text style={styles.appName}>VibeX Music</Text>
+                </View>
 
-                    <TouchableOpacity
-                        style={styles.googleBtn}
-                        activeOpacity={0.8}
-                        // onPress={()=> navigation.navigate("Main")}
-                        onPress={handleGoogleSignIn}
-                        disabled={loading}
-                    >
-                        {loading ? (
-                            <ActivityIndicator size="large" color="#fff" />
-                        ) : (
-                            <>
-                                <Image
-                                    source={require("../assets/img/google.png")}
-                                    style={styles.googleIcon}
-                                />
-                                <Text style={styles.googleText}>
-                                    Continue with Google
-                                </Text>
-                            </>
-                        )}
-
-                    </TouchableOpacity>
-               
+                <TouchableOpacity
+                    style={styles.googleBtn}
+                    activeOpacity={0.8}
+                    // onPress={() => navigation.navigate("Main")}
+                    onPress={handleGoogleSignIn}
+                    disabled={loading}
+                >
+                    {loading ? (
+                        <ActivityIndicator size="large" color="#fff" />
+                    ) : (
+                        <>
+                            <Image
+                                source={require("../assets/img/google.png")}
+                                style={styles.googleIcon}
+                            />
+                            <Text style={styles.googleText}>
+                                Continue with Google
+                            </Text>
+                        </>
+                    )}
+                </TouchableOpacity>
             </SafeAreaView>
-
         </ImageBackground>
     );
 }
