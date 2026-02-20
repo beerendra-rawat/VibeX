@@ -28,7 +28,6 @@ export default function App() {
             <Stack.Screen name="HelpAndSupport" component={HelpAndSupportScreen} />
             <Stack.Screen name="AboutApp" component={AboutAppScreen} />
             <Stack.Screen name="SearchScreen" component={SearchScreen} />
-
           </Stack.Navigator>
         </NavigationContainer>
       </FavoriteProvider>
