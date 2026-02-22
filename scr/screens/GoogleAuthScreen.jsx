@@ -11,21 +11,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import { GoogleSignin, isErrorWithCode, statusCodes, } from '@react-native-google-signin/google-signin';
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
-export default function GoogleAuthScreen({ navigation }) {
+export default function GoogleAuthScreen() {
     const { setUser } = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
 
-    useEffect(() => {
-        GoogleSignin.configure({
-            "webClientId": "349500459690-id6rht9d5a1hodim2pvrpch4ipqng644.apps.googleusercontent.com",
-            scopes: ["profile", "email"],
-            offlineAccess: true,
-        });
-    }, [])
+
 
     const handleGoogleSignIn = async () => {
         console.log("Google sign-in process started ")
@@ -44,11 +38,8 @@ export default function GoogleAuthScreen({ navigation }) {
 
                 const user = response.data.user
                 console.log("User Info:-  ", user)
-
                 setUser(user);
                 console.log("user state update successfully")
-
-                navigation.navigate("Main")
             }
             else {
                 console.log("sing-in was cancelled by the user")

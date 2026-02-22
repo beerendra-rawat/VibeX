@@ -10,9 +10,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import { useState } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { MusicContext } from "../context/MusicContext";
 
 const settingsData = [
     {
@@ -42,25 +42,20 @@ const settingsData = [
 ];
 
 export default function SettingScreen({ navigation }) {
-    const [userInfo, setUserInfo] = useState("")
 
-
-    const { user } = useContext(AuthContext)
+    const { stopMusic } = useContext(MusicContext)
+    const { user, setUser } = useContext(AuthContext)
 
     const signOut = async () => {
         try {
-            await GoogleSignin.signOut()
-            console.log("Successfully signed out from Google.")
-            setUserInfo(null)
-            navigation.navigate("GoogleAuthScreen")
+            await stopMusic()
+            await GoogleSignin.signOut();
+            console.log("Successfully signed out from Google.");
+            setUser(null);
+        } catch (error) {
+            console.error("error occurred during sign-out: ", error);
         }
-        catch (error) {
-            console.error("error occurred during sign-out: ", error)
-        }
-        finally {
-            console.log("sign-out process completed.")
-        }
-    }
+    };
     return (
         <SafeAreaView style={styles.safeArea} edges={["top"]}>
             <StatusBar style="light" />

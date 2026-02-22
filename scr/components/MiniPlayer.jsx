@@ -37,16 +37,17 @@ const styles = StyleSheet.create({
         bottom: 0,
         width: '100%',
         height: 60,
-        backgroundColor: '#111',
+        backgroundColor: '#121212',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 20,
-        borderTopWidth: 1,
-        borderTopColor: '#333'
+        borderWidth: 1,
+        borderColor: "#00BCD4",
+        borderRadius: 12,
     },
     text: {
-        color: '#fff',
+        color: '#FFFFFF',
         flex: 1,
     }
 });

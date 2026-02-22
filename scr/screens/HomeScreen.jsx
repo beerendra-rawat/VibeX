@@ -82,8 +82,12 @@ export default function HomeScreen({ navigation }) {
                         onSongPress={(song) => handleSongPress(song, songs)}
                     />
                 )}
+
+
             </View>
-            <MiniPlayer />
+            <View style={styles.miniPlayer}>
+                <MiniPlayer />
+            </View>
         </SafeAreaView>
     );
 }
@@ -142,6 +146,9 @@ const styles = StyleSheet.create({
     songList: {
         marginTop: 16,
         flex: 1,
-        paddingBottom: 80,
     },
+    miniPlayer: {
+        marginBottom: 80,
+        marginHorizontal: 24,
+    }
 });

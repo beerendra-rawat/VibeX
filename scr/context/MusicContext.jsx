@@ -86,7 +86,7 @@ export const MusicProvider = ({ children }) => {
                 await sound.current.playAsync();
             }
         } catch (error) {
-            console.log("Toggle error:", error);  
+            console.log("Toggle error:", error);
         }
     };
 
@@ -129,6 +129,24 @@ export const MusicProvider = ({ children }) => {
         await sound.current.setPositionAsync(value * 1000);
     };
 
+    const stopMusic = async () => {
+        try {
+            await sound.current.stopAsync();
+            await sound.current.unloadAsync();
+
+            setIsPlaying(false);
+            setCurrentSong(null);
+            setPosition(0);
+            setDuration(0);
+            setSongsList([]);
+            setCurrentIndex(0);
+
+            console.log("Music stopped successfully");
+
+        } catch (error) {
+            console.log("Error stopping music:", error);
+        }
+    };
     return (
         <MusicContext.Provider
             value={{
@@ -145,6 +163,7 @@ export const MusicProvider = ({ children }) => {
                 setIsLoop,
                 isShuffle,
                 setIsShuffle,
+                stopMusic,
             }}
         >
             {children}
