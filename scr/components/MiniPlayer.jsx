@@ -1,34 +1,72 @@
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import {
     Text,
     TouchableOpacity,
     Image,
-    StyleSheet
+    StyleSheet,
+    Animated,
+    View
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { MusicContext } from "../context/MusicContext";
 import { useNavigation } from "@react-navigation/native";
 
 export default function MiniPlayer() {
-    const { currentSong, isPlaying, togglePlayPause } = useContext(MusicContext);
+
+    const { currentSong, isPlaying, togglePlayPause, stopMusic } = useContext(MusicContext);
     const navigation = useNavigation();
+    const slideAnim = useRef(new Animated.Value(0)).current;
 
     if (!currentSong) return null;
 
+    const handleClose = async () => {
+        Animated.timing(slideAnim, {
+            toValue: 100,
+            duration: 300,
+            useNativeDriver: true,
+        }).start(async () => {
+            await stopMusic();
+            slideAnim.setValue(0);
+        });
+    };
+
     return (
-        <TouchableOpacity
-            style={styles.container}
-            onPress={() => navigation.navigate("MusicScreen")}
+        <Animated.View
+            style={[
+                styles.container,
+                { transform: [{ translateY: slideAnim }] }
+            ]}
         >
-            <Text style={styles.text}>{currentSong.filename}</Text>
-            <TouchableOpacity onPress={togglePlayPause}>
-                <Image
-                    source={isPlaying ? require("../assets/img/pause.png")
-                        : require("../assets/img/play-3.png")
-                    }
-                    style={{ width: 30, height: 30, tintColor: '#fff' }}
-                />
+            <TouchableOpacity
+                style={{ flex: 1 }}
+                onPress={() => navigation.navigate("MusicScreen")}
+            >
+                <Text style={styles.text} numberOfLines={1}>
+                    {currentSong.filename}
+                </Text>
             </TouchableOpacity>
-        </TouchableOpacity>
+
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 15 }}>
+
+                <TouchableOpacity onPress={togglePlayPause}>
+                    <Image
+                        source={
+                            isPlaying
+                                ? require("../assets/img/pause.png")
+                                : require("../assets/img/play-3.png")
+                        }
+                        style={{ width: 28, height: 28, tintColor: "#fff" }}
+                    />
+                </TouchableOpacity>
+
+                {!isPlaying && (
+                    <TouchableOpacity onPress={handleClose}>
+                        <Ionicons name="close" size={24} color="#fff" />
+                    </TouchableOpacity>
+                )}
+
+            </View>
+        </Animated.View>
     );
 }
 const styles = StyleSheet.create({
@@ -49,5 +87,7 @@ const styles = StyleSheet.create({
     text: {
         color: '#FFFFFF',
         flex: 1,
+        paddingTop: 18,
+
     }
 });
