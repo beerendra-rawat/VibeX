@@ -19,8 +19,6 @@ export default function GoogleAuthScreen() {
     const { setUser } = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
 
-
-
     const handleGoogleSignIn = async () => {
         console.log("Google sign-in process started ")
         try {
