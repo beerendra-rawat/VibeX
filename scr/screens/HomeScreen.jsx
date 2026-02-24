@@ -37,10 +37,12 @@ export default function HomeScreen({ navigation }) {
             <View style={styles.headerContainer}>
                 <View style={styles.topRow}>
                     <View style={styles.avtarWrap}>
-                        <Image
-                            source={{ uri: user?.photo }}
-                            style={styles.avtarIcon}
-                        />
+                        <TouchableOpacity onPress={() => navigation.navigate("Account")}>
+                            <Image
+                                source={{ uri: user?.photo }}
+                                style={styles.avtarIcon}
+                            />
+                        </TouchableOpacity>
                     </View>
                     <TouchableOpacity
                         style={styles.iconsWrap}

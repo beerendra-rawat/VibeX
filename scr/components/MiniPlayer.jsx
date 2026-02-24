@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingHorizontal: 20,
         borderWidth: 1,
-        borderColor: "#00BCD4",
+        borderColor: "#A855F7",
         borderRadius: 12,
     },
     text: {
