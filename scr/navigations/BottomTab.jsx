@@ -19,9 +19,9 @@ export default function BottomTab() {
                 tabBarShowLabel: false,
 
                 tabBarStyle: {
-                    marginHorizontal: 24,
+                    marginHorizontal: 70,
                     position: "absolute",
-                    justifyContent: 'center',
+                    justifyContent: 'space-between',
                     left: 20,
                     right: 20,
                     bottom: insets.bottom + 5,

@@ -70,8 +70,8 @@ export default function SettingScreen({ navigation }) {
                 <View style={styles.userCard}>
                     <Image source={{ uri: user?.photo }} style={styles.avatar} />
                     <View>
-                        <Text style={styles.userName}>{user.name}</Text>
-                        <Text style={styles.userEmail}>{user.email}</Text>
+                        <Text style={styles.userName}>{user?.name}</Text>
+                        <Text style={styles.userEmail}>{user?.email}</Text>
                     </View>
                 </View>
 

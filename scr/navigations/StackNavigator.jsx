@@ -16,8 +16,6 @@ const Stack = createNativeStackNavigator();
 const StackNavigator = () => {
     const { user, loading } = useContext(AuthContext);
 
-    if (loading) return null;
-
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             {user ? (

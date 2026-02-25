@@ -47,13 +47,14 @@ export default function FavoriteSong({ navigation }) {
     );
 
     return (
-        <SafeAreaView style={styles.safeArea} edges={["top"]}>
+        <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
             <StatusBar style="light" />
 
             <FlatList
                 data={favorites}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id}
+                contentContainerStyle={styles.scrollContent}
                 ListEmptyComponent={
                     <Text style={styles.subTitle}>
                         No Favorite Songs Yet.
@@ -84,6 +85,9 @@ const styles = StyleSheet.create({
         fontSize: 22,
         fontWeight: "600",
         color: "#fff",
+    },
+    scrollContent:{
+        paddingBottom: 100,
     },
     songItem: {
         flexDirection: "row",
