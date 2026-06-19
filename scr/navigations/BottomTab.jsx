@@ -19,7 +19,7 @@ export default function BottomTab() {
                 tabBarShowLabel: false,
 
                 tabBarStyle: {
-                    marginHorizontal: 70,
+                    marginHorizontal: 24,
                     position: "absolute",
                     justifyContent: 'space-between',
                     left: 20,
